@@ -13,15 +13,17 @@ public class ContaItemProcessor implements ItemProcessor<Conta, Conta> {
     public ReceitaService receitaService;
 
     @Override
-    public Conta process(Conta conta) throws Exception {
+    public Conta process(Conta conta){
         try {
-            conta.setSent(receitaService.atualizarConta(conta.getAgencia(),  conta.getConta(), conta.getSaldo(),
+            conta.setResultado(receitaService.atualizarConta(conta.getAgencia(),  conta.getConta(), conta.getSaldo(),
                     conta.getStatus()));
         }
-        catch (Exception e) {
-            conta.setSent(false);
+        catch (RuntimeException e) {
+            log.error("Error sending account: " + conta.getConta());
+            conta.setResultado(false);
+        }catch (InterruptedException e){
+            Thread.currentThread().interrupt();
         }
-
         return conta;
     }
 }
