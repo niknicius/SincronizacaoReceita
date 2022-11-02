@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 
+/** Conta Entity
+ * @author Vinnicius Santos<vinnicius.santos@dcx.ufpb.br>
+ */
 @Data
 @Slf4j
 public class Conta {
@@ -17,6 +20,10 @@ public class Conta {
     private Boolean resultado;
 
 
+    /** Saldo setter method
+     * @param saldo String
+     * @author Vinnicius Santos<vinnicius.santos@dcx.ufpb.br>
+     */
     public void setSaldo(String saldo) {
         try {
             this.saldo = ConversionUtils.parseStringToFormattedDouble(saldo);
@@ -25,6 +32,10 @@ public class Conta {
         }
     }
 
+    /** Conta setter method
+     * @param conta String
+     * @author Vinnicius Santos<vinnicius.santos@dcx.ufpb.br>
+     */
     public void setConta(String conta) {
         this.conta = conta.replace("-", "");
     }
