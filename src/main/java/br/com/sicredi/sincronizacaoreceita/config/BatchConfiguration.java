@@ -9,6 +9,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
@@ -17,7 +18,7 @@ import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.boot.ApplicationArguments;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
@@ -31,16 +32,16 @@ import org.springframework.core.io.Resource;
 public class BatchConfiguration {
 
     /** Create a new flat file reader
-     * @param args ApplicationArguments
+     * @param fileName String
      * @return FlatFileItemReader
      * @author Vinnicius Santos<vinnicius.santos@dcx.ufpb.br>
      */
     @Bean
-    public FlatFileItemReader<Conta> reader(ApplicationArguments args){
-        String filePath = args.getSourceArgs()[0];
+    @StepScope
+    public FlatFileItemReader<Conta> reader(@Value("#{jobParameters['file.path']}") String fileName){
         return new FlatFileItemReaderBuilder<Conta>()
                 .name("ContaItemReader")
-                .resource(new FileSystemResource(filePath))
+                .resource(new FileSystemResource(fileName))
                 .delimited()
                 .delimiter(";")
                 .names("agencia", "conta", "saldo", "status")
@@ -103,15 +104,14 @@ public class BatchConfiguration {
 
     /** Create the batch step
      * @param stepBuilderFactory stepBuilderFactory
-     * @param args ApplicationArguments
      * @return Step
      * @author Vinnicius Santos<vinnicius.santos@dcx.ufpb.br>
      */
     @Bean
-    public Step step1(StepBuilderFactory stepBuilderFactory, ApplicationArguments args) {
+    public Step step1(StepBuilderFactory stepBuilderFactory) {
         return stepBuilderFactory.get("step1")
                 .<Conta, Conta> chunk(1000)
-                .reader(reader(args))
+                .reader(reader(""))
                 .processor(processor())
                 .writer(writer())
                 .build();

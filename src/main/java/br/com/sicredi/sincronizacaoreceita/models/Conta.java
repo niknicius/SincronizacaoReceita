@@ -1,7 +1,10 @@
 package br.com.sicredi.sincronizacaoreceita.models;
 
 import br.com.sicredi.sincronizacaoreceita.utils.ConversionUtils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
@@ -9,7 +12,11 @@ import java.text.ParseException;
 /** Conta Entity
  * @author Vinnicius Santos<vinnicius.santos@dcx.ufpb.br>
  */
+
+@AllArgsConstructor
+@Builder
 @Data
+@NoArgsConstructor
 @Slf4j
 public class Conta {
 
